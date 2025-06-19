@@ -3,7 +3,7 @@
 
 **TLE Eliminators** is a full-stack web application for tracking and managing student progress in competitive programming, with tight integration to [Codeforces](https://codeforces.com/). It provides a clean UI, powerful analytics, and tools for educators or teams to monitor coding performance.
 
-NOTION DOC of Project -[https://futuristic-sassafras-004.notion.site/CF-Student-DashBoard-21759dc85019818494d0c2bed1b5eff6](https://www.notion.so/CF-Student-DashBoard-21759dc85019818494d0c2bed1b5eff6?source=copy_link)
+NOTION DOC of Project - https://www.notion.so/CF-Student-DashBoard-21759dc85019818494d0c2bed1b5eff6?source=copy_link
 
 ---
 
