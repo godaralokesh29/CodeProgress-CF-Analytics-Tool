@@ -152,7 +152,7 @@ Response:
 
 ## ⚖ Customization
 
-* App name: Hardcoded as **TLE Eliminators** in UI.
+* App name:  **TLE Eliminators** in UI.
 * Theme: Modify `tailwind.config.ts` for branding changes.
 * Cron jobs: Add syncing logic in `cron.js` (backend) to automate data fetch.
 
@@ -175,7 +175,7 @@ For large changes, open an issue to discuss ideas.
 Have questions or suggestions?
 
 * Open an issue on GitHub
-* Email: [your-email@example.com](mailto:godaralokesh2023@example.com)
+* Email: [godaralokesh2023@gmail.com]
 
 ---
 
