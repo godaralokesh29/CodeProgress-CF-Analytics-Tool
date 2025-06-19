@@ -173,7 +173,7 @@ For large changes, open an issue to discuss ideas.
 Have questions or suggestions?
 
 * Open an issue on GitHub
-* Email: [your-email@example.com](mailto:your-email@example.com)
+* Email: [your-email@example.com](mailto:godaralokesh2023@example.com)
 
 ---
 
