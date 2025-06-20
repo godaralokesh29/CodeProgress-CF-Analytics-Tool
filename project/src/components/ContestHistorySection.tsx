@@ -41,17 +41,25 @@ const ContestHistorySection: React.FC<ContestHistorySectionProps> = ({ student }
       };
     }
 
-    const totalRatingChange = filteredContests.reduce((sum, contest) => sum + contest.ratingChange, 0);
-    const bestRank = Math.min(...filteredContests.map(c => c.rank));
-    const problemsSolved = filteredContests.reduce((sum, contest) => sum + contest.problemsSolved, 0);
-    const totalProblems = filteredContests.reduce((sum, contest) => sum + contest.totalProblems, 0);
+    const contestsWithRatingChange = filteredContests.filter(c => typeof c.oldRating === 'number' && typeof c.newRating === 'number');
+
+    const totalRatingChange = contestsWithRatingChange.reduce((sum, contest) => {
+      return sum + (contest.newRating - contest.oldRating);
+    }, 0);
+    
+    const problemsSolved = filteredContests.reduce((sum, contest) => sum + (contest.problemsSolved || 0), 0);
+    const totalProblems = filteredContests.reduce((sum, contest) => sum + (contest.totalProblems || 0), 0);
+
+    const bestRank = Math.min(...filteredContests.map(c => c.rank).filter(r => typeof r === 'number' && isFinite(r)));
 
     return {
       totalContests: filteredContests.length,
-      avgRatingChange: Math.round(totalRatingChange / filteredContests.length),
-      bestRank,
+      avgRatingChange: contestsWithRatingChange.length > 0
+        ? Math.round(totalRatingChange / contestsWithRatingChange.length)
+        : 0,
+      bestRank: isFinite(bestRank) ? bestRank : 0,
       problemsSolved,
-      totalProblems
+      totalProblems,
     };
   }, [filteredContests]);
 
@@ -131,7 +139,7 @@ const ContestHistorySection: React.FC<ContestHistorySectionProps> = ({ student }
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-purple-600">Problems Solved</p>
-              <p className="text-2xl font-bold text-purple-900">{stats.problemsSolved}/{stats.totalProblems}</p>
+              <p className="text-2xl font-bold text-purple-900">{stats.problemsSolved}/{stats.totalProblems || 'N/A'}</p>
             </div>
             <Target size={24} className="text-purple-400" />
           </div>
@@ -258,15 +266,33 @@ const ContestHistorySection: React.FC<ContestHistorySectionProps> = ({ student }
                         : 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">#{contest.rank}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">N/A</td>
-                    <td className="px-6 py-4 text-sm">N/A</td>
-                    <td className="px-6 py-4 text-sm">
-                      <span className={`font-semibold ${(contest.newRating - contest.oldRating) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {(contest.newRating - contest.oldRating) > 0 ? '+' : ''}{contest.newRating - contest.oldRating}
-                      </span>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {typeof contest.problemsSolved === 'number' && typeof contest.totalProblems === 'number'
+                        ? `${contest.problemsSolved} / ${contest.totalProblems}`
+                        : 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <span className="font-semibold" style={{ color: getRatingColor(contest.newRating) }}>{contest.newRating}</span>
+                      {typeof contest.problemsSolved === 'number' && typeof contest.totalProblems === 'number'
+                        ? contest.totalProblems - contest.problemsSolved
+                        : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      {typeof contest.oldRating === 'number' && typeof contest.newRating === 'number' ? (
+                        <span className={`font-semibold ${(contest.newRating - contest.oldRating) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {(contest.newRating - contest.oldRating) > 0 ? '+' : ''}{contest.newRating - contest.oldRating}
+                        </span>
+                      ) : (
+                        'N/A'
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      {typeof contest.newRating === 'number' ? (
+                        <span className="font-semibold" style={{ color: getRatingColor(contest.newRating) }}>
+                          {contest.newRating}
+                        </span>
+                      ) : (
+                        'N/A'
+                      )}
                     </td>
                   </tr>
                 ))

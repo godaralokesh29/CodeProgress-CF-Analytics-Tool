@@ -5,12 +5,11 @@ import { fetchAndStoreCFData } from '../services/codeforcesService.js';
 
 const router = express.Router();
 
-// Get all students with CF data
 router.get('/', async (req, res) => {
   const students = await Student.find().lean();
   const data = await Promise.all(
     students.map(async (student) => {
-      const cfData = await CodeforcesData.findOne({ student: student._id });
+      const cfData = await CodeforcesData.findOne({ student: student._id }).select('+contestHistory');
       return {
         ...student,
         codeforces: cfData,

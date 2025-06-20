@@ -6,6 +6,9 @@ const CodeforcesDataSchema = new mongoose.Schema({
   maxRating: Number,
   contestHistory: Array, // [{ contestId, contestName, rank, oldRating, newRating, ratingUpdateTimeSeconds }]
   problemStats: Object,  // { totalSolved, avgRating, mostDifficult, ... }
+  problemSolvingData: Object, // { submissions, solvedProblems, dailyActivity }
+  avgRatingChange: Number,
+  problemsSolved: Number,
   lastUpdated: Date,
 });
 
