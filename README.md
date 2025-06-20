@@ -46,13 +46,12 @@ $ cd tle-eliminators
 ```bash
 # 2. Install dependencies
 $ cd backend && npm install
-$ cd ../frontend && npm install
+$ cd ../project && npm install
 ```
 
 ```bash
 # 3. Create .env file in /backend
 MONGODB_URI=<your_mongodb_uri>
-PORT=3001
 ```
 
 ```bash
@@ -63,7 +62,7 @@ $ npm run dev
 
 ```bash
 # 5. Start frontend
-$ cd frontend
+$ cd project
 $ npm run dev
 ```
 
