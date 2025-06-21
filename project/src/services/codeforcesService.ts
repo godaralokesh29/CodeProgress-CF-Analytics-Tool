@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Student } from '../types/Student';
 
-const API_BASE_URL = 'http://localhost:3001'; // Adjust this to match your backend URL
+const API_BASE_URL = 'https://tle-intern-assi-1.onrender.com'; // Adjust this to match your backend URL
 
 export const fetchCodeforcesData = async (handle: string): Promise<Partial<Student>> => {
   try {
