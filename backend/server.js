@@ -8,8 +8,10 @@ import cors from 'cors';
 
 import Student from './models/Student.js';
 import { fetchAndStoreCFData } from './services/codeforcesService.js';
+import { checkAndSendReminders } from './services/reminderService.js';
 import { router as cronRouter, setCronHandlers } from './routes/cron.js';
 import studentsRouter from './routes/students.js';
+import reminderRouter from './routes/reminders.js';
 
 const app = express();
 app.use(express.json());
@@ -46,6 +48,12 @@ let cfCron = cron.schedule(cronSchedule, async () => {
       }
     }
     console.log('Codeforces data sync completed');
+    
+    // Check and send reminders after data sync
+    console.log('Checking for inactive students and sending reminders...');
+    const reminderResult = await checkAndSendReminders();
+    console.log('Reminder check completed:', reminderResult);
+    
   } catch (err) {
     console.error('Error in cron job:', err.message);
   }
@@ -62,6 +70,12 @@ const updateCronJob = (schedule) => {
         await fetchAndStoreCFData(student);
       }
       console.log('Codeforces data sync completed');
+      
+      // Check and send reminders after data sync
+      console.log('Checking for inactive students and sending reminders...');
+      const reminderResult = await checkAndSendReminders();
+      console.log('Reminder check completed:', reminderResult);
+      
     } catch (err) {
       console.error('Error in cron job:', err.message);
     }
@@ -74,6 +88,7 @@ setCronHandlers(updateCronJob, cfCron);
 // Routes
 app.use('/settings/cron', cronRouter);
 app.use('/students', studentsRouter);
+app.use('/reminders', reminderRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {

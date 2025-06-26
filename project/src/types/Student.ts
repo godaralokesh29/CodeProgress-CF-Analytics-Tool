@@ -11,6 +11,13 @@ export interface Student {
   recentContests: Contest[];
   problemSolvingData: ProblemSolvingData;
   codeforces?: any;
+  // Email reminder fields
+  emailRemindersEnabled?: boolean;
+  reminderEmailCount?: number;
+  lastReminderSent?: string | null;
+  lastSubmissionDate?: string | null;
+  daysSinceLastSubmission?: number | null;
+  isInactive?: boolean;
 }
 
 export interface Contest {

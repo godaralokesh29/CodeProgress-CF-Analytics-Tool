@@ -5,6 +5,23 @@ const StudentSchema = new mongoose.Schema({
   email: String,
   phoneNumber: String,
   codeforcesHandle: String,
+  // Email reminder settings
+  emailRemindersEnabled: {
+    type: Boolean,
+    default: true
+  },
+  reminderEmailCount: {
+    type: Number,
+    default: 0
+  },
+  lastReminderSent: {
+    type: Date,
+    default: null
+  },
+  lastSubmissionDate: {
+    type: Date,
+    default: null
+  }
 });
 
 const Student = mongoose.model('Student', StudentSchema);
