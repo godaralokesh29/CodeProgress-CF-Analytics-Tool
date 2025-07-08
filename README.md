@@ -152,14 +152,16 @@ cd ../project && npm run dev
 
 ## 📁 Project Structure
 
+```plaintext
 ├── backend/
-│ ├── models/ # Mongoose schemas
-│ ├── routes/ # REST API routes
-│ ├── services/ # Core logic and utilities
-│ └── server.js # Main backend server entry
+│   ├── models/          # Mongoose schemas
+│   ├── routes/          # REST API routes
+│   ├── services/        # Core logic and utilities
+│   └── server.js        # Main backend server entry
 ├── project/
-│ ├── src/
-│ │ ├── components/ # React components
-│ │ ├── types/ # TypeScript interfaces/types
-│ │ └── utils/ # Helpers and utilities
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   ├── types/       # TypeScript interfaces/types
+│   │   └── utils/       # Helpers and utilities
 └── README.md
+
