@@ -1,6 +1,7 @@
 import { Student } from '../types/Student';
 
-const API_BASE = 'http://localhost:3001'; // Change if your backend runs elsewhere
+// const API_BASE = 'http://localhost:3001'; // Change if your backend runs elsewhere
+const API_BASE = 'https://tle-intern-assi-1.onrender.com'; // Change if your backend runs elsewhere
 
 export async function fetchStudents(): Promise<Student[]> {
   const res = await fetch(`${API_BASE}/students`);

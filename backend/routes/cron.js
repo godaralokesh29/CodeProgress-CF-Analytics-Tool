@@ -6,7 +6,7 @@ let currentCronJob = null;
 let cronUpdateHandler = null;
 
 router.post('/set', (req, res) => {
-  const { schedule } = req.body;
+  const { schedule } = req.body;  
   if (!schedule) {
     return res.status(400).json({ error: 'Schedule is required' });
   }
