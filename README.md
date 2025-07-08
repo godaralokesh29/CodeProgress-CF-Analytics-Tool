@@ -1,113 +1,106 @@
-﻿# TLE-Intern-Assi
-# TLE Eliminators
-
-**TLE Eliminators** is a full-stack web application for tracking and managing student progress in competitive programming, with tight integration to [Codeforces](https://codeforces.com/). It provides a clean UI, powerful analytics, and tools for educators or teams to monitor coding performance.
+CodeProgress
+CodeProgress is a full-stack web application for tracking and managing student progress in competitive programming, with tight integration to Codeforces. It provides a clean UI, powerful analytics, and tools for educators or teams to monitor coding performance.
 
 NOTION DOC of Project - https://www.notion.so/CF-Student-DashBoard-21759dc85019818494d0c2bed1b5eff6?source=copy_link
 
----
+✨ Features
+Student Management: Add, edit, delete, and view student records.
 
-## ✨ Features
+Codeforces Sync: Automatically fetch and update each student's contest and problem-solving history.
 
-* **Student Management**: Add, edit, delete, and view student records.
-* **Codeforces Sync**: Automatically fetch and update each student's contest and problem-solving history.
-* **Analytics**: Visualize rating progression, contest history, and problem-solving activity.
-* **CSV Export**: Export filtered student data as a CSV file for offline use.
-* **Responsive UI**: Built with Tailwind CSS for a modern, mobile-friendly experience.
+Analytics: Visualize rating progression, contest history, and problem-solving activity.
 
-### Email Reminder System
-- **Automatic Reminders**: Send emails to students who haven't submitted in 7 days
-- **Individual Control**: Enable/disable reminders for specific students
-- **Reminder Tracking**: View how many times reminders have been sent to each student
-- **Manual Trigger**: Manually check and send reminders for testing
-- **Email Configuration**: Easy setup with Gmail SMTP
+CSV Export: Export filtered student data as a CSV file for offline use.
 
----
+Responsive UI: Built with Tailwind CSS for a modern, mobile-friendly experience.
 
-## 🚀 Tech Stack
+Email Reminder System
+Automatic Reminders: Send emails to students who haven't submitted in 7 days
 
-| Layer         | Technology                                   |
-| ------------- | -------------------------------------------- |
-| Frontend      | React, TypeScript, Tailwind CSS              |
-| Backend       | Node.js, Express, MongoDB, Mongoose          |
-| External APIs | [Codeforces API](https://codeforces.com/api) |
+Individual Control: Enable/disable reminders for specific students
 
----
+Reminder Tracking: View how many times reminders have been sent to each student
 
-## ⚡ Getting Started
+Manual Trigger: Manually check and send reminders for testing
 
-### 🔺 Prerequisites
+Email Configuration: Easy setup with Gmail SMTP
 
-* Node.js v16 or later
-* MongoDB (local or cloud, e.g., MongoDB Atlas)
-* npm or yarn
-* Gmail account (for sending emails)
+🚀 Tech Stack
+Layer	Technology
+Frontend	React, TypeScript, Tailwind CSS
+Backend	Node.js, Express, MongoDB, Mongoose
+External APIs	Codeforces API
 
-### 🔁 Installation
+⚡ Getting Started
+🔺 Prerequisites
+Node.js v16 or later
 
-```bash
+MongoDB (local or cloud, e.g., MongoDB Atlas)
+
+npm or yarn
+
+Gmail account (for sending emails)
+
+🔁 Installation
+bash
+Copy
+Edit
 # 1. Clone the repository
-$ git clone https://github.com/your-username/tle-eliminators.git
-$ cd tle-eliminators
-```
-
-```bash
+$ git clone https://github.com/your-username/codeprogress.git
+$ cd codeprogress
+bash
+Copy
+Edit
 # 2. Install dependencies
 $ cd backend && npm install
 $ cd ../project && npm install
-```
-
-```bash
+bash
+Copy
+Edit
 # 3. Create .env file in /backend
 MONGODB_URI=<your_mongodb_uri>
-MONGO_URI=mongodb://localhost:27017/tle
+MONGO_URI=mongodb://localhost:27017/codeprogress
 PORT=3001
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
-```
-
-```bash
+bash
+Copy
+Edit
 # 4. Start backend
 $ cd backend
 $ npm run dev
-```
-
-```bash
+bash
+Copy
+Edit
 # 5. Start frontend
 $ cd project
 $ npm run dev
-```
+Frontend: http://localhost:5173
 
-* Frontend: [http://localhost:5173](http://localhost:5173)
-* Backend: [http://localhost:3001](http://localhost:3001)
+Backend: http://localhost:3001
 
----
-
-## 🔐 Backend API
-
-### 📃 Student Routes
-
-#### `GET /students`
-
+🔐 Backend API
+📃 Student Routes
+GET /students
 Fetch all students.
 
-```json
+json
+Copy
+Edit
 Response: [ { _id, name, email, codeforcesHandle, ... } ]
-```
-
-#### `GET /students/:id`
-
+GET /students/:id
 Fetch a student by ID.
 
-```json
+json
+Copy
+Edit
 Response: { _id, name, email, ... }
-```
-
-#### `POST /students`
-
+POST /students
 Create a new student.
 
-```json
+json
+Copy
+Edit
 Request body:
 {
   "name": "Jane Doe",
@@ -115,25 +108,19 @@ Request body:
   "codeforcesHandle": "janedoe",
   "phoneNumber": "1234567890"
 }
-```
-
-#### `PUT /students/:id`
-
+PUT /students/:id
 Update student details.
 
-#### `DELETE /students/:id`
-
+DELETE /students/:id
 Delete a student.
 
----
-
-### 🌐 Codeforces Sync
-
-#### `POST /students/:id/sync-codeforces`
-
+🌐 Codeforces Sync
+POST /students/:id/sync-codeforces
 Fetch and update a student's Codeforces history.
 
-```json
+json
+Copy
+Edit
 Response:
 {
   "_id": "...",
@@ -149,137 +136,151 @@ Response:
     }
   }
 }
-```
+🌐 Frontend Screenshots
+Student Dashboard: View enrolled students with rating, handle, and basic info.
 
----
+Student Details: See charts for contests and problem-solving activity.
 
-## 🌐 Frontend Screenshots
+Sync Button: Instantly update a student's Codeforces data.
 
-* **Student Dashboard**: View enrolled students with rating, handle, and basic info.
-* **Student Details**: See charts for contests and problem-solving activity.
-* **Sync Button**: Instantly update a student's Codeforces data.
+⚖ Customization
+App name: CodeProgress in UI.
 
----
+Theme: Modify tailwind.config.ts for branding changes.
 
-## ⚖ Customization
+Cron jobs: Add syncing logic in cron.js (backend) to automate data fetch.
 
-* App name:  **TLE Eliminators** in UI.
-* Theme: Modify `tailwind.config.ts` for branding changes.
-* Cron jobs: Add syncing logic in `cron.js` (backend) to automate data fetch.
-
----
-
-## 🙌 Contributing
-
+🙌 Contributing
 We welcome contributions! Please:
 
-* Fork the repo
-* Create a feature branch
-* Submit a pull request
+Fork the repo
+
+Create a feature branch
+
+Submit a pull request
 
 For large changes, open an issue to discuss ideas.
 
----
-
-## ✉ Contact
-
+✉ Contact
 Have questions or suggestions?
 
-* Open an issue on GitHub
-* Email: [godaralokesh2023@gmail.com]
+Open an issue on GitHub
 
----
+Email: [godaralokesh2023@gmail.com]
 
-## ⚖ License
+⚖ License
+MIT License. See LICENSE for details.
 
-MIT License. See [LICENSE](LICENSE) for details.
+Email Reminder System
+How It Works
+Automatic Detection: After each data sync, the system identifies students who haven't made submissions in the last 7 days
 
----
+Email Sending: Sends personalized reminder emails to inactive students
 
-## Email Reminder System
+Rate Limiting: Prevents sending too many emails (24-hour cooldown between reminders)
 
-### How It Works
-1. **Automatic Detection**: After each data sync, the system identifies students who haven't made submissions in the last 7 days
-2. **Email Sending**: Sends personalized reminder emails to inactive students
-3. **Rate Limiting**: Prevents sending too many emails (24-hour cooldown between reminders)
-4. **Tracking**: Records the number of reminders sent and last reminder date
+Tracking: Records the number of reminders sent and last reminder date
 
-### Email Features
-- **Personalized Content**: Includes student name and motivational content
-- **Actionable Links**: Direct link to Codeforces problem set
-- **Tips Section**: Provides problem-solving tips and strategies
-- **Professional Design**: Clean, responsive email template
+Email Features
+Personalized Content: Includes student name and motivational content
 
-### Management Interface
-- **Status Overview**: View all students with their reminder status
-- **Individual Controls**: Enable/disable reminders per student
-- **Statistics**: See reminder counts and last submission dates
-- **Manual Testing**: Trigger reminder checks manually
-- **Configuration Status**: Check if email is properly configured
+Actionable Links: Direct link to Codeforces problem set
 
-### API Endpoints
+Tips Section: Provides problem-solving tips and strategies
 
-#### Reminder Management
-- `GET /reminders/students` - Get all students with reminder settings
-- `GET /reminders/stats/:studentId` - Get reminder stats for a student
-- `PATCH /reminders/toggle/:studentId` - Toggle email reminders for a student
-- `POST /reminders/reset-count/:studentId` - Reset reminder count for a student
-- `POST /reminders/check-now` - Manually trigger reminder check
-- `GET /reminders/email-config` - Check email configuration status
+Professional Design: Clean, responsive email template
 
-#### Cron Management
-- `GET /settings/cron/current` - Get current cron schedule
-- `POST /settings/cron/set` - Update cron schedule
+Management Interface
+Status Overview: View all students with their reminder status
 
-## Usage
+Individual Controls: Enable/disable reminders per student
 
-### Adding Students
-1. Navigate to the Students tab
-2. Click "Add Student"
-3. Fill in student details including email and Codeforces handle
-4. Email reminders are enabled by default
+Statistics: See reminder counts and last submission dates
 
-### Managing Reminders
-1. Navigate to the "Email Reminders" tab
-2. View all students and their reminder status
-3. Use the toggle buttons to enable/disable reminders
-4. Reset reminder counts if needed
-5. Use "Check Reminders Now" to manually trigger the system
+Manual Testing: Trigger reminder checks manually
 
-### Monitoring Activity
-- **Active Students**: Green status, recent submissions
-- **Inactive Students**: Red status, no submissions in 7+ days
-- **Disabled Reminders**: Gray status, reminders turned off
+Configuration Status: Check if email is properly configured
 
-## Configuration
+API Endpoints
+Reminder Management
+GET /reminders/students - Get all students with reminder settings
 
-### Cron Schedule
+GET /reminders/stats/:studentId - Get reminder stats for a student
+
+PATCH /reminders/toggle/:studentId - Toggle email reminders for a student
+
+POST /reminders/reset-count/:studentId - Reset reminder count for a student
+
+POST /reminders/check-now - Manually trigger reminder check
+
+GET /reminders/email-config - Check email configuration status
+
+Cron Management
+GET /settings/cron/current - Get current cron schedule
+
+POST /settings/cron/set - Update cron schedule
+
+Usage
+Adding Students
+Navigate to the Students tab
+
+Click "Add Student"
+
+Fill in student details including email and Codeforces handle
+
+Email reminders are enabled by default
+
+Managing Reminders
+Navigate to the "Email Reminders" tab
+
+View all students and their reminder status
+
+Use the toggle buttons to enable/disable reminders
+
+Reset reminder counts if needed
+
+Use "Check Reminders Now" to manually trigger the system
+
+Monitoring Activity
+Active Students: Green status, recent submissions
+
+Inactive Students: Red status, no submissions in 7+ days
+
+Disabled Reminders: Gray status, reminders turned off
+
+Configuration
+Cron Schedule
 The default schedule runs at 2 AM daily. You can modify this via the API:
-```bash
+
+bash
+Copy
+Edit
 curl -X POST http://localhost:3001/settings/cron/set \
   -H "Content-Type: application/json" \
   -d '{"schedule": "0 2 * * *"}'
-```
+Email Template
+The email template is located in backend/services/emailService.js and can be customized as needed.
 
-### Email Template
-The email template is located in `backend/services/emailService.js` and can be customized as needed.
+Troubleshooting
+Email Issues
+Not Sending: Check EMAIL_USER and EMAIL_PASS in .env
 
-## Troubleshooting
+Authentication Failed: Ensure you're using an App Password, not your regular password
 
-### Email Issues
-- **Not Sending**: Check EMAIL_USER and EMAIL_PASS in .env
-- **Authentication Failed**: Ensure you're using an App Password, not your regular password
-- **Gmail Blocked**: Check Gmail's security settings and allow less secure apps if needed
+Gmail Blocked: Check Gmail's security settings and allow less secure apps if needed
 
-### Data Sync Issues
-- **API Errors**: Check Codeforces API status
-- **Rate Limiting**: The system handles rate limiting automatically
-- **Network Issues**: Check your internet connection
+Data Sync Issues
+API Errors: Check Codeforces API status
 
-## Development
+Rate Limiting: The system handles rate limiting automatically
 
-### Project Structure
-```
+Network Issues: Check your internet connection
+
+Development
+Project Structure
+bash
+Copy
+Edit
 ├── backend/
 │   ├── models/          # MongoDB schemas
 │   ├── routes/          # API endpoints
@@ -292,19 +293,18 @@ The email template is located in `backend/services/emailService.js` and can be c
 │   │   └── utils/       # Utility functions
 │   └── package.json
 └── README.md
-```
+Contributing
+Fork the repository
 
-### Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+Create a feature branch
 
-## License
+Make your changes
 
+Test thoroughly
+
+Submit a pull request
+
+License
 This project is licensed under the ISC License.
 
----
-
-> 🚀 **Track, improve, and win** with TLE Eliminators. Empower your competitive programming journey today!
+🚀 Track, improve, and win with CodeProgress. Empower your competitive programming journey today!
