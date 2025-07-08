@@ -1,8 +1,8 @@
 import axios from 'axios';
 import CodeforcesData from '../models/CodeforcesData.js';
-import { updateLastSubmissionDate } from './reminderService.js';
 
-export async function fetchAndStoreCFData(student) {
+export async function fetchAndStoreCFData(student) {  
+
   try {
     const handle = student.codeforcesHandle;
 
@@ -22,7 +22,6 @@ export async function fetchAndStoreCFData(student) {
     const solvedProblemsSet = new Set(); 
     let maxRating = 0; 
     let mostDifficult = null; 
-    let latestSubmissionDate = null;
 
     const problemsSolvedInContest = {}; 
     const problemsAttemptedInContest = {};
@@ -34,11 +33,6 @@ export async function fetchAndStoreCFData(student) {
       const submissionTime = new Date(sub.creationTimeSeconds * 1000);
       const dateStr = submissionTime.toISOString().split('T')[0];
       const key = `${sub.problem.contestId}-${sub.problem.index}`;
-
-      // Track the latest submission date
-      if (!latestSubmissionDate || submissionTime > latestSubmissionDate) {
-        latestSubmissionDate = submissionTime;
-      }
 
       if (sub.contestId && sub.author.participantType === 'CONTESTANT') {
         const contestIdStr = String(sub.contestId);
@@ -85,11 +79,6 @@ export async function fetchAndStoreCFData(student) {
         }
       }
     });
-
-    // Update the student's last submission date
-    if (latestSubmissionDate) {
-      await updateLastSubmissionDate(student._id, latestSubmissionDate);
-    }
 
     const problemSolvingData = {
         solvedProblems: Object.values(uniqueSolvedProblems),
