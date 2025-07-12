@@ -15,10 +15,7 @@ import reminderRouter from './routes/reminders.js';
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://codesources.vercel.app'], // add your frontend's URL here
-  credentials: true // if you use cookies or authentication
-}));
+app.use(cors());
 
 // MongoDB connection with error handling
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/tle', {
