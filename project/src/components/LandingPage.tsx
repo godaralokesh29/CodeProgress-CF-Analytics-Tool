@@ -24,9 +24,7 @@ const Hero: React.FC = () => {
         </div>
         
         <div className="hidden md:flex items-center space-x-8">
-          <a href="#features" className="text-slate-300 hover:text-white transition-colors">Features</a>
-          <a href="#demo" className="text-slate-300 hover:text-white transition-colors">Demo</a>
-          <a href="#pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</a>
+         
           <button 
             onClick={() => navigate('/signin')}
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
@@ -271,99 +269,7 @@ const Stats: React.FC = () => {
   );
 };
 
-// Demo Component
-const Demo: React.FC = () => {
-  return (
-    <section id="demo" className="py-20 bg-slate-900 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-      </div>
-      
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-6">
-            <Play className="w-4 h-4 text-purple-400" />
-            <span className="text-purple-400 text-sm font-medium">See It In Action</span>
-          </div>
-          
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Experience the
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Power</span> of Analytics
-          </h2>
-          
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-12">
-            See how CFAnalytics transforms raw contest data into actionable insights that help you improve your competitive programming skills.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-blue-500/20 border border-blue-500/30 rounded-xl flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-blue-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-2">Real-time Rating Analysis</h3>
-                <p className="text-slate-300">Track your rating changes instantly after each contest with detailed performance metrics.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-purple-500/20 border border-purple-500/30 rounded-xl flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-purple-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-2">Contest Performance</h3>
-                <p className="text-slate-300">Comprehensive analysis of your contest history with ranking trends and problem-solving patterns.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-green-500/20 border border-green-500/30 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-green-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-2">Growth Insights</h3>
-                <p className="text-slate-300">Identify your strengths and weaknesses with detailed problem category breakdowns.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-orange-500/20 border border-orange-500/30 rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-orange-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-2">Smart Scheduling</h3>
-                <p className="text-slate-300">Never miss a contest with intelligent notifications and calendar integration.</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="relative">
-            <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 hover:bg-slate-800/50 transition-all duration-300">
-              <div className="aspect-video bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl flex items-center justify-center mb-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
-                <div className="relative z-10 text-center">
-                  <Play className="w-16 h-16 text-white mb-4 mx-auto opacity-80" />
-                  <p className="text-white font-medium">Interactive Demo</p>
-                </div>
-              </div>
-              
-              <div className="text-center">
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors inline-flex items-center space-x-2">
-                  <Play className="w-5 h-5" />
-                  <span>Watch Demo</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+
 
 // Pricing Component
 const Pricing: React.FC = () => {
@@ -575,9 +481,6 @@ const LandingPage: React.FC = () => {
     <div className="min-h-screen bg-slate-900">
       <Hero />
       <Features />
-      <Stats />
-      <Demo />
-      <Pricing />
       <Footer />
     </div>
   );

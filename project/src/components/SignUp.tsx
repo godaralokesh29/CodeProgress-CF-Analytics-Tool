@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { BarChart3, User, ArrowLeft, Check } from 'lucide-react';
 
 const SignUp: React.FC = () => {
-  const [codeforcesHandle, setCodeforcesHandle] = useState('');
+  const [codeforcesHandle, setCodeforcesHandle] = useState('orzdevinwang');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();

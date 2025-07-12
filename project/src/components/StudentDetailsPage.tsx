@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, Award, Calendar, Hash, BarChart3, Activity, Target, Clock, RefreshCw, LogOut, User } from 'lucide-react';
 import { Student } from '../types/Student';
@@ -13,7 +13,11 @@ const StudentDetailsPage: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [cfStats, setCfStats] = useState<any>(null);
+  const [cfContests, setCfContests] = useState<any[]>([]);
   const navigate = useNavigate();
+  const hasAutoSynced = useRef(false);
 
   useEffect(() => {
     const codeforcesHandle = localStorage.getItem('codeforcesHandle');
@@ -21,9 +25,34 @@ const StudentDetailsPage: React.FC = () => {
       navigate('/signin');
       return;
     }
-
     loadUserData(codeforcesHandle);
+    // Fetch Codeforces profile picture and stats
+    fetch(`https://codeforces.com/api/user.info?handles=${codeforcesHandle}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'OK' && data.result[0].titlePhoto) {
+          setProfilePic(data.result[0].titlePhoto);
+          setCfStats(data.result[0]);
+        }
+      });
+    fetch(`https://codeforces.com/api/user.rating?handle=${codeforcesHandle}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'OK') {
+          setCfContests(data.result);
+        }
+      });
   }, [navigate]);
+
+  // Auto-sync data on first load after student is set
+  useEffect(() => {
+    if (student && !isUpdating && !hasAutoSynced.current) {
+      hasAutoSynced.current = true;
+      handleUpdateCodeforcesData();
+    }
+    // Only run when student is set for the first time
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [student]);
 
   const loadUserData = async (handle: string) => {
     try {
@@ -105,6 +134,16 @@ const StudentDetailsPage: React.FC = () => {
     if (rating < 2300) return 'Master';
     if (rating < 2400) return 'International Master';
     return 'Grandmaster';
+  };
+
+  // Helper to get max rating from contest history
+  const getMaxRating = () => {
+    if (!cfContests.length) return cfStats?.rating || 0;
+    return Math.max(...cfContests.map(c => c.newRating));
+  };
+  const getRecentTrend = () => {
+    if (!cfContests.length) return 0;
+    return cfContests.slice(-5).reduce((sum, c) => sum + (c.newRating - c.oldRating), 0);
   };
 
   if (loading) {
@@ -214,71 +253,63 @@ const StudentDetailsPage: React.FC = () => {
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {/* Student Info Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className={`p-6 rounded-xl ${getRatingColor(student.currentRating)}`}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium opacity-80">Current Rating</p>
-                    <p className="text-2xl font-bold">{student.currentRating}</p>
-                    <p className="text-xs opacity-70">{getRatingTitle(student.currentRating)}</p>
+            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+              {/* Profile Picture and Handle */}
+              <div className="flex flex-col items-center bg-slate-800/30 border border-slate-700/50 rounded-xl p-6 min-w-[220px]">
+                {profilePic ? (
+                  <img src={profilePic} alt="Profile" className="w-28 h-28 rounded-full border-4 border-blue-500 mb-4" />
+                ) : (
+                  <div className="w-28 h-28 rounded-full bg-slate-700 flex items-center justify-center mb-4">
+                    <User className="w-16 h-16 text-slate-400" />
                   </div>
-                  <Award size={24} className="opacity-60" />
+                )}
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">{student.name}</div>
+                  <div className="text-blue-400 font-mono">@{student.codeforcesHandle}</div>
+                  <a href={`https://codeforces.com/profile/${student.codeforcesHandle}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-300 hover:underline">View Codeforces Profile</a>
                 </div>
               </div>
-
-              <div className={`p-6 rounded-xl ${getRatingColor(student.maxRating)}`}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium opacity-80">Max Rating</p>
-                    <p className="text-2xl font-bold">{student.maxRating}</p>
-                    <p className="text-xs opacity-70">{getRatingTitle(student.maxRating)}</p>
+              {/* Stats Cards */}
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className={`p-6 rounded-xl ${getRatingColor(cfStats?.rating || 0)}`}> {/* Current Rating */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80">Current Rating</p>
+                      <p className="text-2xl font-bold">{cfStats?.rating ?? 'N/A'}</p>
+                      <p className="text-xs opacity-70">{getRatingTitle(cfStats?.rating || 0)}</p>
+                    </div>
+                    <Award size={24} className="opacity-60" />
                   </div>
-                  <TrendingUp size={24} className="opacity-60" />
                 </div>
-              </div>
-
-              <div className="p-6 rounded-xl bg-indigo-100 text-indigo-600">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium opacity-80">Total Contests</p>
-                    <p className="text-2xl font-bold">{student.totalContests}</p>
-                    <p className="text-xs opacity-70">Participated</p>
+                <div className={`p-6 rounded-xl ${getRatingColor(getMaxRating())}`}> {/* Max Rating */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80">Max Rating</p>
+                      <p className="text-2xl font-bold">{getMaxRating()}</p>
+                      <p className="text-xs opacity-70">{getRatingTitle(getMaxRating())}</p>
+                    </div>
+                    <TrendingUp size={24} className="opacity-60" />
                   </div>
-                  <Hash size={24} className="opacity-60" />
                 </div>
-              </div>
-
-              <div className={`p-6 rounded-xl ${performanceTrend >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium opacity-80">Recent Trend</p>
-                    <p className="text-2xl font-bold">{performanceTrend > 0 ? '+' : ''}{performanceTrend}</p>
-                    <p className="text-xs opacity-70">Last 5 contests</p>
+                <div className="p-6 rounded-xl bg-indigo-100 text-indigo-600"> {/* Total Contests */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80">Total Contests</p>
+                      <p className="text-2xl font-bold">{cfContests.length}</p>
+                      <p className="text-xs opacity-70">Participated</p>
+                    </div>
+                    <Hash size={24} className="opacity-60" />
                   </div>
-                  {performanceTrend >= 0 ? <TrendingUp size={24} className="opacity-60" /> : <TrendingDown size={24} className="opacity-60" />}
                 </div>
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-white mb-4">Contact Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-slate-400">Email</p>
-                  <p className="font-medium text-white">{student.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">Phone</p>
-                  <p className="font-medium text-white">{student.phoneNumber || 'Not provided'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">Enrollment Date</p>
-                  <p className="font-medium text-white">{new Date(student.enrollmentDate).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">Codeforces Handle</p>
-                  <p className="font-medium text-white">@{student.codeforcesHandle}</p>
+                <div className={`p-6 rounded-xl ${getRecentTrend() >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}> {/* Recent Trend */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80">Recent Trend</p>
+                      <p className="text-2xl font-bold">{getRecentTrend() > 0 ? '+' : ''}{getRecentTrend()}</p>
+                      <p className="text-xs opacity-70">Last 5 contests</p>
+                    </div>
+                    {getRecentTrend() >= 0 ? <TrendingUp size={24} className="opacity-60" /> : <TrendingDown size={24} className="opacity-60" />}
+                  </div>
                 </div>
               </div>
             </div>

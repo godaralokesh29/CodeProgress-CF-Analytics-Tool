@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, TrendingUp, TrendingDown, Award, Calendar, Hash, BarChart3, Activity, Target, Clock, RefreshCw } from 'lucide-react';
+import { X, TrendingUp, TrendingDown, Award, Calendar, Hash, BarChart3, Activity, Target, Clock, RefreshCw, User } from 'lucide-react';
 import { Student } from '../types/Student';
 import ContestHistorySection from './ContestHistorySection';
 import ProblemSolvingSection from './ProblemSolvingSection';
@@ -15,6 +15,29 @@ const StudentDetailsModal: React.FC<StudentDetailsModalProps> = ({ student, onCl
   const [activeTab, setActiveTab] = useState<'overview' | 'contests' | 'problems'>('overview');
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [cfStats, setCfStats] = useState<any>(null);
+  const [cfContests, setCfContests] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (student && student.codeforcesHandle) {
+      fetch(`https://codeforces.com/api/user.info?handles=${student.codeforcesHandle}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'OK' && data.result[0].titlePhoto) {
+            setProfilePic(data.result[0].titlePhoto);
+            setCfStats(data.result[0]);
+          }
+        });
+      fetch(`https://codeforces.com/api/user.rating?handle=${student.codeforcesHandle}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'OK') {
+            setCfContests(data.result);
+          }
+        });
+    }
+  }, [student]);
 
   const handleUpdateCodeforcesData = async () => {
     try {
@@ -53,6 +76,15 @@ const StudentDetailsModal: React.FC<StudentDetailsModalProps> = ({ student, onCl
     if (rating < 2300) return 'Master';
     if (rating < 2400) return 'International Master';
     return 'Grandmaster';
+  };
+
+  const getMaxRating = () => {
+    if (!cfContests.length) return cfStats?.rating || 0;
+    return Math.max(...cfContests.map(c => c.newRating));
+  };
+  const getRecentTrend = () => {
+    if (!cfContests.length) return 0;
+    return cfContests.slice(-5).reduce((sum, c) => sum + (c.newRating - c.oldRating), 0);
   };
 
   const performanceTrend = (student.codeforces?.contestHistory as any[] | undefined)?.slice(0, 5)?.reduce((sum: number, contest: any) => sum + contest.ratingChange, 0) || 0;
@@ -134,133 +166,63 @@ const StudentDetailsModal: React.FC<StudentDetailsModalProps> = ({ student, onCl
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {activeTab === 'overview' && (
-            <div className="p-6">
-              {/* Student Info Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div className={`p-4 rounded-lg ${getRatingColor(student.currentRating)}`}>
+            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start p-6">
+              {/* Profile Picture and Handle */}
+              <div className="flex flex-col items-center bg-gray-100 rounded-lg p-6 min-w-[220px]">
+                {profilePic ? (
+                  <img src={profilePic} alt="Profile" className="w-28 h-28 rounded-full border-4 border-blue-500 mb-4" />
+                ) : (
+                  <div className="w-28 h-28 rounded-full bg-gray-300 flex items-center justify-center mb-4">
+                    <User className="w-16 h-16 text-gray-400" />
+                  </div>
+                )}
+                <div className="text-center">
+                  <div className="text-lg font-bold text-gray-900">{student.name}</div>
+                  <div className="text-blue-600 font-mono">@{student.codeforcesHandle}</div>
+                  <a href={`https://codeforces.com/profile/${student.codeforcesHandle}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline">View Codeforces Profile</a>
+                </div>
+              </div>
+              {/* Stats Cards */}
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className={`p-6 rounded-xl ${getRatingColor(cfStats?.rating || 0)}`}> {/* Current Rating */}
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80">Current Rating</p>
-                      <p className="text-2xl font-bold">{student.currentRating}</p>
-                      <p className="text-xs opacity-70">{getRatingTitle(student.currentRating)}</p>
+                      <p className="text-2xl font-bold">{cfStats?.rating ?? 'N/A'}</p>
+                      <p className="text-xs opacity-70">{getRatingTitle(cfStats?.rating || 0)}</p>
                     </div>
                     <Award size={24} className="opacity-60" />
                   </div>
                 </div>
-
-                <div className={`p-4 rounded-lg ${getRatingColor(student.maxRating)}`}>
+                <div className={`p-6 rounded-xl ${getRatingColor(getMaxRating())}`}> {/* Max Rating */}
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80">Max Rating</p>
-                      <p className="text-2xl font-bold">{student.maxRating}</p>
-                      <p className="text-xs opacity-70">{getRatingTitle(student.maxRating)}</p>
+                      <p className="text-2xl font-bold">{getMaxRating()}</p>
+                      <p className="text-xs opacity-70">{getRatingTitle(getMaxRating())}</p>
                     </div>
                     <TrendingUp size={24} className="opacity-60" />
                   </div>
                 </div>
-
-                <div className="p-4 rounded-lg bg-indigo-100 text-indigo-600">
+                <div className="p-6 rounded-xl bg-indigo-100 text-indigo-600"> {/* Total Contests */}
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80">Total Contests</p>
-                      <p className="text-2xl font-bold">{student.totalContests}</p>
+                      <p className="text-2xl font-bold">{cfContests.length}</p>
                       <p className="text-xs opacity-70">Participated</p>
                     </div>
                     <Hash size={24} className="opacity-60" />
                   </div>
                 </div>
-
-                <div className={`p-4 rounded-lg ${performanceTrend >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                <div className={`p-6 rounded-xl ${getRecentTrend() >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}> {/* Recent Trend */}
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80">Recent Trend</p>
-                      <p className="text-2xl font-bold">{performanceTrend > 0 ? '+' : ''}{performanceTrend}</p>
+                      <p className="text-2xl font-bold">{getRecentTrend() > 0 ? '+' : ''}{getRecentTrend()}</p>
                       <p className="text-xs opacity-70">Last 5 contests</p>
                     </div>
-                    {performanceTrend >= 0 ? <TrendingUp size={24} className="opacity-60" /> : <TrendingDown size={24} className="opacity-60" />}
+                    {getRecentTrend() >= 0 ? <TrendingUp size={24} className="opacity-60" /> : <TrendingDown size={24} className="opacity-60" />}
                   </div>
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div className="bg-gray-50 rounded-lg p-6 mb-8">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Email</p>
-                    <p className="font-medium text-gray-900">{student.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Phone</p>
-                    <p className="font-medium text-gray-900">{student.phoneNumber}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Enrollment Date</p>
-                    <p className="font-medium text-gray-900">{new Date(student.enrollmentDate).toLocaleDateString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Codeforces Profile</p>
-                    <a 
-                      href={`https://codeforces.com/profile/${student.codeforcesHandle}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-blue-600 hover:text-blue-800 font-mono"
-                    >
-                      {student.codeforcesHandle} ↗
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Contest Performance */}
-              <div className="bg-white border border-gray-200 rounded-lg">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Calendar size={20} />
-                    Recent Contest Performance
-                  </h4>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contest</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Problems</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating Change</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">New Rating</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {student.codeforces?.contestHistory && student.codeforces.contestHistory.length > 0 ? (
-                        (student.codeforces.contestHistory as any[]).slice(0, 5).map((contest: any) => (
-                          <tr key={`${contest.id}-${contest.date}`} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 text-sm font-medium text-gray-900">{contest.name}</td>
-                            <td className="px-6 py-4 text-sm text-gray-500">{contest.date}</td>
-                            <td className="px-6 py-4 text-sm text-gray-900">#{contest.rank}</td>
-                            <td className="px-6 py-4 text-sm text-gray-900">{contest.problemsSolved}/{contest.totalProblems}</td>
-                            <td className="px-6 py-4 text-sm">
-                              <span className={`font-semibold ${contest.ratingChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {contest.ratingChange > 0 ? '+' : ''}{contest.ratingChange}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-sm">
-                              <span className={`font-semibold ${getRatingColor(contest.newRating).split(' ')[0]}`}>
-                                {contest.newRating}
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
-                            No recent contest data available
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
                 </div>
               </div>
             </div>

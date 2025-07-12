@@ -2,8 +2,6 @@ import mongoose from 'mongoose';
 
 const StudentSchema = new mongoose.Schema({
   name: String,
-  email: String,
-  phoneNumber: String,
   codeforcesHandle: String,
   // Email reminder settings
   emailRemindersEnabled: {
